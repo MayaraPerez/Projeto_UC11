@@ -169,7 +169,7 @@ public class cadastroVIEW extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProdutosActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-           System.out.println("Cadastro foi realizado com sucesso");
+          System.out.println("Cadastro foi realizado com sucesso");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
