@@ -1,5 +1,8 @@
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -12,15 +15,31 @@ import javax.swing.table.DefaultTableModel;
  * @author Adm
  */
 public class listagemVIEW extends javax.swing.JFrame {
+    //	private ProdutosDAO produtosDAO = new ProdutosDAO();
+    //  private conectaDAO conexao;
 
     /**
      * Creates new form listagemVIEW
      */
-    public listagemVIEW() {
+  public listagemVIEW() {
         initComponents();
+        setLocationRelativeTo(null);
         listarProdutos();
-    }
 
+        listaProdutos.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+                public void valueChanged(ListSelectionEvent event) {
+                        if (!event.getValueIsAdjusting()) {
+                                itemSelecionado();
+
+                        }
+
+                }
+
+        });
+    }
+	conectaDAO conexao = new conectaDAO();
+	ProdutosDAO produtosDAO = new ProdutosDAO(conexao);
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -134,19 +153,51 @@ public class listagemVIEW extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
-        String id = id_produto_venda.getText();
-        
-        ProdutosDAO produtosdao = new ProdutosDAO();
-        
-        //produtosdao.venderProduto(Integer.parseInt(id));
-        listarProdutos();
+        int resposta = JOptionPane.showOptionDialog(null,
+					"Deseja prosseguir com a Venda?",
+					"Atenção",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					new String[]{"SIM", "NÃO"}, "Não");
+
+            if (resposta == 0){
+            int id = Integer.parseInt(id_produto_venda.getText());
+
+            boolean status = conexao.connectDB();
+
+            if (status == false) {
+
+                     JOptionPane.showMessageDialog(null,
+                                            "Erro ao conectar com o Banco de dados", "Banco Dados",
+                                            JOptionPane.ERROR_MESSAGE);
+
+            } else {
+
+                     int retorno = produtosDAO.venderProduto(id);
+
+                     if (retorno == 1) {
+
+                             JOptionPane.showMessageDialog(null, "Produto com status Vendido!",
+                                                    "Confirmação", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+                conexao.desconectarDB();
+		id_produto_venda.setText("");
+		listarProdutos();
+
+            }
+
+        }
+
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed
-        //vendasVIEW vendas = new vendasVIEW(); 
-        //vendas.setVisible(true);
+        vendasVIEW vendas = new vendasVIEW(); 
+        vendas.setVisible(true);
     }//GEN-LAST:event_btnVendasActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
@@ -156,37 +207,32 @@ public class listagemVIEW extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    public static void main(String args[]) {    		 
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                        if ("Nimbus".equals(info.getName())) {
+                                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                                break;
+                        }
                 }
-            }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(listagemVIEW.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new listagemVIEW().setVisible(true);
-            }
+                public void run() {
+                        new listagemVIEW().setVisible(true);
+                }
         });
-    }
+    };
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnVendas;
@@ -200,26 +246,46 @@ public class listagemVIEW extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable listaProdutos;
     // End of variables declaration//GEN-END:variables
-
-    private void listarProdutos(){
-        try {
-            ProdutosDAO produtosdao = new ProdutosDAO();
-            
-            DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
-            model.setNumRows(0);
-            
-            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-            
-            for(int i = 0; i < listagem.size(); i++){
-                model.addRow(new Object[]{
-                    listagem.get(i).getId(),
-                    listagem.get(i).getNome(),
-                    listagem.get(i).getValor(),
-                    listagem.get(i).getStatus()
-                });
-            }
-        } catch (Exception e) {
-        }
     
-    }
+    private void listarProdutos() {
+
+            try {
+                conexao.connectDB();
+
+                DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
+                model.setNumRows(0);
+
+                ArrayList<ProdutosDTO> listagem = produtosDAO.listarProdutos();
+
+                for (int i = 0; i < listagem.size(); i++) {
+
+                        model.addRow(new Object[]{
+                                listagem.get(i).getId(),
+                                listagem.get(i).getNome(),
+                                listagem.get(i).getValor(),
+                                listagem.get(i).getStatus()
+
+                        });
+                }
+            } catch (Exception e) {
+
+                      System.out.println("Erro: " + e.getMessage());
+              }
+
+          }
+    
+	public void itemSelecionado() {
+
+		int selecteRow = listaProdutos.getSelectedRow();
+
+		if (selecteRow >= 0) {
+
+			String id = listaProdutos.getValueAt(selecteRow, 0).toString();
+
+			id_produto_venda.setText(id);
+
+		}
+
+	}
+
 }
