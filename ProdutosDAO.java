@@ -67,9 +67,7 @@ public class ProdutosDAO {
         public ArrayList<ProdutosDTO> listarProdutos() {
 
             String sql = "SELECT * FROM produtos";
-
             try {
-
                     conexao.connectDB();
                     Connection conn = conexao.getConexao();
 
@@ -81,7 +79,6 @@ public class ProdutosDAO {
                     while (rs.next()) {
 
                             ProdutosDTO produto = new ProdutosDTO();
-
                             produto.setId(rs.getInt("id"));
                             produto.setNome(rs.getString("nome"));
                             produto.setValor(rs.getInt("valor"));
@@ -96,41 +93,36 @@ public class ProdutosDAO {
 
             } catch (SQLException ex) {
 
-                    System.out.println("Erro ao pesquisar: " + ex.getMessage());
+                    System.out.println("Erro ao pesquisa: " + ex.getMessage());
 
                     return null;
             }
 
 	}
-         public int venderProdutos (int id) {
+        public int venderProdutos (int id) {
+               int status;
 
-		int status;
+               try {
+                       conexao.connectDB();
+                       Connection conn = conexao.getConexao();
+                       String produtovendido = "Vendido";
+                       PreparedStatement st = conn.prepareStatement("UPDATE produtos SET status =? WHERE id =? ");
 
-		try {
+                       st.setInt(2, id);
+                       st.setString(1, produtovendido);
 
-			conexao.connectDB();
-			Connection conn = conexao.getConexao();
+                       status = st.executeUpdate();
 
-			String produtovendido = "Itens Vendidos";
+                       return status;
 
-			PreparedStatement st = conn.prepareStatement("UPDATE produtos SET status =? WHERE id =? ");
+               } catch (SQLException ex) {
 
-			st.setInt(2, id);
-			st.setString(1, produtovendido);
+                       System.out.println(ex.getErrorCode());
+                       return ex.getErrorCode();
 
-			status = st.executeUpdate();
+               }
 
-			return status;
-
-		} catch (SQLException ex) {
-
-			System.out.println(ex.getErrorCode());
-
-			return ex.getErrorCode();
-
-		}
-
-	}
+       }
 
     public List<ProdutosDTO> listaTableVendas(String statusVenda) {
 
